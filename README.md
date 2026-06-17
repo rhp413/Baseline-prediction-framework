@@ -4,11 +4,11 @@ This repository contains the benchmark code for the paper:
 
 **Review and Assessment of Data-Driven Wind and Solar Forecasting Models: Methodology, Application, Benchmarking, and Analysis**
 
-The code has been cleaned to focus on reproducing the benchmark experiments reported in the paper, especially Tables 6-9. It provides a unified evaluation pipeline for statistical models, classical machine learning models, deep time-series models, LLM-based models, a multimodal Time-VLM model, and Chronos.
+It implements the wind and PV power forecasting benchmark reported in the paper, especially Tables 6-9, and provides a unified evaluation pipeline for statistical models, classical machine learning models, deep time-series models, LLM-based models, a multimodal Time-VLM model, and Chronos.
 
 ## What This Repository Reproduces
 
-The current codebase is scoped to long-term forecasting experiments on wind power and PV power datasets.
+The benchmark evaluates long-term forecasting performance on wind power and PV power datasets.
 
 | Paper result | Script | Description |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ The benchmark includes the following models:
 
 ```text
 .
-|-- benchmark_all_models.py        # Main clean benchmark for Tables 6-8
+|-- benchmark_all_models.py        # Main benchmark for Tables 6-8
 |-- benchmark_noise_t1.py          # Noise robustness benchmark for Table 9
 |-- run.py                         # Single neural-model runner used by benchmark scripts
 |-- requirements.txt               # Python environment snapshot
@@ -41,8 +41,6 @@ The benchmark includes the following models:
 |-- utils/                         # Metrics, tools, time features, DM test
 `-- dataset/prompt_bank/custom.txt # Prompt template used by Time-LLM/Time-VLM
 ```
-
-Only the long-term forecasting task is kept in this cleaned version. Other unrelated tasks and models have been removed to keep the release aligned with the four benchmark tables.
 
 ## Environment Setup
 
@@ -66,7 +64,7 @@ Notes:
 - `ARIMA` and `ETS` require `statsmodels`.
 - `Chronos` requires `chronos-forecasting` and loads `amazon/chronos-t5-small`.
 - `Time-LLM` uses Hugging Face models. The default setting is GPT-2: `openai-community/gpt2`.
-- `Time-VLM` currently keeps only the CLIP branch and loads CLIP from a local path in `src/TimeVLM/vlm_manager.py`:
+- `Time-VLM` uses the CLIP branch and loads CLIP from a local path in `src/TimeVLM/vlm_manager.py`:
 
 ```python
 clip_path = '/root/phr/ICML25-TimeVLM-main/clip-vit-base-patch32'
@@ -111,7 +109,7 @@ The data split is fixed to `8:1:1` for train, validation, and test.
 
 ## Reproduce Tables 6-8
 
-Run the clean benchmark:
+Run the benchmark on the original test set:
 
 ```bash
 python benchmark_all_models.py \
@@ -159,7 +157,7 @@ params_k, mem_mb, t_train_s_per_ep, t_inf_ms
 
 ## Reproduce Table 9
 
-Table 9 requires the clean `T = 1` results from `summary_accuracy.csv`. Run `benchmark_all_models.py` first, then run:
+Table 9 requires the `T = 1` results on the original test set from `summary_accuracy.csv`. Run `benchmark_all_models.py` first, then run:
 
 ```bash
 python benchmark_noise_t1.py \
@@ -278,7 +276,7 @@ Traditional non-neural baselines may not report parameter or GPU-memory metrics.
 - The train, validation, and test split is chronological.
 - Deep model results can vary slightly across GPUs, CUDA versions, and PyTorch versions.
 - Chronos is used as a zero-shot univariate forecaster. It uses only historical `power` values as context and ignores exogenous features.
-- The current cleaned runner supports only `long_term_forecast`.
+- `run.py` supports the `long_term_forecast` task used by this benchmark.
 
 ## Citation
 
@@ -294,4 +292,4 @@ If you use this repository, please cite the accompanying paper:
 
 ## License
 
-No license file is included in this cleaned repository yet. Add a license before public release if the code will be distributed publicly.
+No license file is included in this repository yet. Add a license before public release if the code will be distributed publicly.
